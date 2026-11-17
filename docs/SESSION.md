@@ -3,7 +3,7 @@
 Last updated: 2026-11-17
 
 ## Current pins
-- Package `@decentnetwork/beagle-embed` 0.1.0. Public repo `Decent-Network/beagle-embed`. npm `latest` once publish succeeds.
+- Package `@decentnetwork/beagle-embed` 0.1.0. Public repo `Decent-Network/beagle-embed`. npm page shows 0.1.0 public; a second publish was refused because 0.1.0 is already published. First publish used the `latest` tag.
 - Example: `example/index.html`. Serve with `BEAGLE_WEB_PUBLIC` pointing at a beagle-web `public/` directory. Do not copy those files into this repo.
 - After **Open in this page**, measured 1,801,858 bytes (beagle-web.js 1,099,190, beagle-ui 0.2.40 429,984, plus the five vendor scripts). Nothing in that set loads before the click.
 - `openChat(el, { mode: "auto" })` returns `{ opened: false, reason: "installed" }` when `127.0.0.1:8766` answers and this origin has no `beagle-connect:identity`. The full client link is `?address=`.
