@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beagle embed</title>
+<link rel="stylesheet" href="/example/example.css">
+</head>
+<body>
+<main>
+  <h1>Beagle embed</h1>
+  <p>The page does not load the chat until you open it. Paste a carrier address to open that thread. "Open in Beagle" uses <code>?address=</code>.</p>
+  <label>Address <input id="address" autocomplete="off" spellcheck="false" placeholder="carrier address"></label>
+  <label>Bridge <input id="bridge" autocomplete="off" spellcheck="false" placeholder="optional, wss://…"></label>
+  <div class="row">
+    <button id="open" type="button">Open chat</button>
+    <button id="force" type="button">Open in this page</button>
+    <a id="full" href="https://app.beagle.chat" target="beagle-app" rel="noopener">Open in Beagle</a>
+  </div>
+  <p id="note"></p>
+</main>
+<div id="dock" class="dock" hidden></div>
+<script type="module" src="/example/main.js"></script>
+</body>
+</html>
