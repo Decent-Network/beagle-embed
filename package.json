@@ -1,6 +1,6 @@
 {
   "name": "@decentnetwork/beagle-embed",
-  "version": "0.1.0",
+  "version": "0.2.2",
   "description": "A Beagle chat panel a host page can open on demand. Loads @decentnetwork/beagle-ui and the beagle-web peer only when the panel opens.",
   "license": "MIT",
   "type": "module",
@@ -10,6 +10,7 @@
   },
   "files": [
     "src",
+    "frame",
     "example",
     "README.md"
   ],
@@ -22,7 +23,8 @@
     "@decentnetwork/beagle-ui": "^0.2.40"
   },
   "devDependencies": {
-    "playwright-core": "^1.48.2"
+    "playwright-core": "^1.48.2",
+    "tweetnacl": "^1.0.3"
   },
   "publishConfig": {
     "access": "public"

@@ -7,19 +7,39 @@
 <link rel="stylesheet" href="/example/example.css">
 </head>
 <body>
-<main>
-  <h1>Beagle embed</h1>
-  <p>The page does not load the chat until you open it. Paste a carrier address to open that thread. "Open in Beagle" uses <code>?address=</code>.</p>
-  <label>Address <input id="address" autocomplete="off" spellcheck="false" placeholder="carrier address"></label>
-  <label>Bridge <input id="bridge" autocomplete="off" spellcheck="false" placeholder="optional, wss://…"></label>
-  <div class="row">
-    <button id="open" type="button">Open chat</button>
-    <button id="force" type="button">Open in this page</button>
-    <a id="full" href="https://app.beagle.chat" target="beagle-app" rel="noopener">Open in Beagle</a>
+<header>
+  <strong>Beagle embed</strong>
+  <div id="session" class="row">
+    <span id="sign-label">Sign in with Beagle</span>
+    <button id="sign-local" type="button">This computer</button>
+    <button id="sign-web" type="button">app.beagle.chat</button>
+    <strong id="who" hidden></strong>
+    <button id="sign-out" type="button" hidden>Sign out</button>
   </div>
+</header>
+<main>
+  <h1>A chat column on your own page</h1>
+  <div class="intro">
+    <p>The page stays as it is. Chat opens in a narrow column on the right, using <code>openChat</code> from this package.</p>
+    <ol>
+      <li><strong>Sign in with Beagle</strong>, then choose This computer or app.beagle.chat, and approve in the window that opens. The header keeps that name and userid above the column. Signing in does not open the column.</li>
+      <li><strong>Chat</strong>, the button at the lower right, opens the column as that signed-in userid. An address opens that friend. This computer is embedded in the column. app.beagle.chat keeps its key in its own tab, so the column shows a link.</li>
+      <li>With nobody signed in, Chat still opens. It uses a key this browser made for this page. <strong>Sign out</strong> drops the session only. It does not delete that key, the name, the avatar, or the description. <strong>Close</strong> hides the column.</li>
+    </ol>
+  </div>
+  <label>Friend <input id="address" autocomplete="off" spellcheck="false" placeholder="name or carrier address, optional"></label>
+  <label>Name for this page's key <input id="name" autocomplete="off" placeholder="optional, used only when signed out"></label>
   <p id="note"></p>
 </main>
-<div id="dock" class="dock" hidden></div>
+<button id="chat" class="launcher" type="button">Chat</button>
+<div id="dock" class="dock" hidden>
+  <div class="dock-bar">
+    <strong id="dock-title">Chat</strong>
+    <button id="close-chat" type="button">Close</button>
+  </div>
+  <div id="dock-body"></div>
+</div>
+<script src="/vendor/nacl.js"></script>
 <script type="module" src="/example/main.js"></script>
 </body>
 </html>

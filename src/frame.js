@@ -1,0 +1,81 @@
+// The panel document a host serves at /beagle-frame.html.
+//
+// A real same-origin URL, not about:blank. about:blank shares the host page's
+// session history on Safari, so the chat's back button leaves the site. The
+// address stays in the query string: setting location.hash from the frame can
+// push the host page.
+//
+// Asset URLs come from the query (react, reactDom, qrcode, peerWebrtc,
+// chatComponents, beagleWeb, beagleUi) plus address and bridge. The host's
+// openChat() fills those in. A profile, when the host passed one, is in
+// sessionStorage under beagle-embed:profile — too large for a query string
+// once it carries a picture.
+
+export const FRAME_HTML = `<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>html,body,#root{margin:0;height:100%;background:#0b0b0f}</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(function () {
+  function safe(value) {
+    try {
+      var u = new URL(value, location.href);
+      if (u.protocol !== "https:" && u.protocol !== "http:") return "";
+      return u.href;
+    } catch (e) { return ""; }
+  }
+  try {
+    var ua = navigator.userAgent || "";
+    if (/AppleWebKit/.test(ua) && !/Chrome|Chromium|CriOS|Edg|OPR|Firefox|FxiOS/.test(ua)) {
+      localStorage.setItem("beagle-web:backend", "ls");
+    }
+  } catch (e) {}
+  var q = new URLSearchParams(location.search);
+  globalThis.__BEAGLE_BRIDGE__ = q.get("bridge") || "";
+  try {
+    var mirror = "beagle-web:kv:identity";
+    if (!localStorage.getItem(mirror)) {
+      var raw = localStorage.getItem("beagle-connect:identity");
+      if (raw) {
+        var file = JSON.parse(raw);
+        if (file && file.format === "decent-peer-tox-keypair-v1" && typeof file.publicKey === "string" && typeof file.secretKey === "string") {
+          localStorage.setItem(mirror, JSON.stringify({ v: { format: file.format, publicKey: file.publicKey, secretKey: file.secretKey } }));
+        }
+      }
+    }
+  } catch (e) {}
+  var names = ["react", "reactDom", "qrcode", "peerWebrtc", "chatComponents", "beagleWeb"];
+  for (var i = 0; i < names.length; i++) {
+    var src = safe(q.get(names[i]) || "");
+    if (src) document.write("<script src=" + JSON.stringify(src) + "><\\/script>");
+  }
+  var ui = safe(q.get("beagleUi") || "");
+  if (!ui) return;
+  document.write("<script type=module>import { mount, setUiHost } from " + JSON.stringify(ui) + ";\\n"
+    + "setUiHost({ hostNeedsWelcome: true, hostPrefersRtcFile: true, hostHasKeyBackup: true, hostAssistant: false, hostEnsWrite: false,"
+    + " fileUrl: function (name) { return '/api/file-download?name=' + encodeURIComponent(name); },"
+    + " fileDownloadUrl: function (name) { return '/api/file-download?name=' + encodeURIComponent(name) + '&dl=1'; } });\\n"
+    + "mount(document.getElementById('root'));\\n"
+    + "var raw = ''; try { raw = sessionStorage.getItem('beagle-embed:profile') || ''; } catch (e) {}\\n"
+    + "if (!raw) {} else { var profile; try { profile = JSON.parse(raw); } catch (e) { profile = null; }\\n"
+    + "var want = profile && String(profile.name || '').trim();\\n"
+    + "if (want && want !== 'visitor') { var n = 0; var tick = function () {\\n"
+    + "fetch('/api/state').then(function (r) { return r.json(); }).then(function (j) {\\n"
+    + "var me = j.me || {}; var held = String(me.name || '').trim();\\n"
+    + "if (!(me.userId || me.hasIdentity)) throw new Error('wait');\\n"
+    + "if (held === want) return;\\n"
+    + "var punk = Number.isInteger(profile.punkId) ? profile.punkId : null;\\n"
+    + "var avatar = typeof profile.avatarDataUrl === 'string' && profile.avatarDataUrl.indexOf('data:image/') === 0 ? profile.avatarDataUrl : null;\\n"
+    + "return fetch('/api/set-profile', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: want, description: profile.description || '', punkId: punk, avatarDataUrl: avatar, onboarded: true }) });\\n"
+    + "}).catch(function () { if (n++ < 20) setTimeout(tick, 300); }); }; tick(); } }\\n"
+    + "<\\/script>");
+})();
+</script>
+</body>
+</html>
+`;

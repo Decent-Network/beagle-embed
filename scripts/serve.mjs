@@ -32,6 +32,8 @@ function send(res, file) {
 function route(url) {
   const path = decodeURIComponent(url.split("?")[0]);
   if (path === "/" || path === "/example" || path === "/example/") return join(root, "example/index.html");
+  if (path === "/beagle-frame.html") return join(root, "frame/beagle-frame.html");
+  if (path === "/vendor/nacl.js") return join(root, "node_modules/tweetnacl/nacl-fast.min.js");
   if (path === "/vendor/beagle-ui.js") return uiFile;
   if (path === "/beagle-web.js" || path === "/sw.js" || path.startsWith("/vendor/")) {
     const rel = path.replace(/^\//, "");
